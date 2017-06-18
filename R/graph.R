@@ -115,3 +115,23 @@ bnlearnPlot <- function(model, labels = NULL){
   DiagrammeR::render_graph(graph)
 }
 
+#' Plots lavaan graph model with DiagrammeR
+#'
+#' @param model A model fit object of class lavaan
+#' @param labels  An optional named list of variable labels
+#' @param node_options  A named list of node options for Diagrammer syntax, default provided.
+#' @return A Diagrammer plot of the path diagram for \code{model}
+#' @import DiagrammeR
+#' @import lavaan
+#' @export
+lavaanPlot_dev <- function(model, labels = NULL, node_options = list(shape = "box")) {
+  paths <- data.frame(model@ParTable$lhs, model@ParTable$rhs, model@ParTable$op)
+  plot_paths <- paths[paths$model.ParTable.op == "~",1:2]
+  nodes <- unique(c(model@ParTable$lhs, model@ParTable$rhs))
+  parse(eval(names(node_options)[1]))
+  shape <- rep("box", length(nodes))
+  node_frame <- DiagrammeR::create_nodes(nodes, node_options)
+  edge_frame <- DiagrammeR::create_edges(from = plot_paths$model.ParTable.rhs, to = plot_paths$model.ParTable.lhs)
+  graph <- DiagrammeR::create_graph(nodes_df = node_frame, edges_df = edge_frame)
+  DiagrammeR::render_graph(graph)
+}

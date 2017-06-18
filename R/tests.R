@@ -14,18 +14,44 @@
 # # the network structure is still the same.
 # all.equal(res, bn.net(fitted))
 #
-#
+## Using the old function
 # graphPlot::bnlearnPlot(fitted)
+## using the S3 method for class bn.fit
+# graphPlot(fitted)
+#
 # library(lavaan)
+# library(DiagrammeR)
 #
 # model <- 'mpg ~ cyl + disp + hp
 #           qsec ~ disp + hp + wt'
 #
 # fit <- sem(model, data = mtcars)
-# summary(fit)
 #
+## Using the old function
 # lavaanPlot(model = fit, node_options = list(shape = "box", fontname = "Helvetica"), edge_options = list(color = "grey"))
+## Using the new version of the function that is unfinished
+# lavaanPlot_dev(model = fit)
+## Using the S3 method for class lavaan
+# graphPlot(fit)
+
+# model <- fit
+# node_options = list(shape = "box")
 #
+# lavaanPlot_dev <- function(model, labels = NULL, node_options = list(shape = "box")) {
+#   paths <- data.frame(model@ParTable$lhs, model@ParTable$rhs, model@ParTable$op)
+#   plot_paths <- paths[paths$model.ParTable.op == "~",1:2]
+#   nodes <- unique(c(model@ParTable$lhs, model@ParTable$rhs))
+#   node_frame <- DiagrammeR::create_nodes(nodes, node_options)
+#   node_frame <- DiagrammeR::create_nodes(nodes)
+#   shape <- rep("box", 6)
+#   node_frame <- DiagrammeR::create_nodes(nodes, shape = "box")
+#   edge_frame <- DiagrammeR::create_edges(from = plot_paths$model.ParTable.rhs, to = plot_paths$model.ParTable.lhs)
+#   graph <- DiagrammeR::create_graph(nodes_df = node_frame, edges_df = edge_frame)
+#   DiagrammeR::render_graph(graph)
+# }
+#
+
+
 #
 # labels <- list(mpg = "Miles Per Gallon", cyl = "Cylinders", disp = "Displacement", hp = "Horsepower", qsec = "Speed", wt = "Weight")
 #
